@@ -3,9 +3,9 @@ Smart Calculator app built with Stream lit
 # Smart Calculator — A Deployed Python Web Application
 
 This project is a fully deployed **interactive calculator web application** built using Python and Streamlit.  
-It was independently designed to demonstrate **software engineering fundamentals**, **secure computation**, and **real-world deployment skills**.
+It was independently designed to demonstrate  **secure computation**, and **real-world deployment skills**.
 
-Unlike basic calculators, this application focuses on **safe expression evaluation**, **modular design**, and **user-focused UI/UX**.
+Unlike basic calculators, this application focuses on **safe expression evaluation**
 
 ---
 
@@ -15,7 +15,7 @@ Many beginner projects stop at “it works locally.”
 This project goes further by addressing:
 
 - Secure computation (no unsafe `eval`)
-- Clean separation of logic and UI
+- Clean separation of logic a
 - Real-time user interaction
 - Public cloud deployment
 
@@ -29,7 +29,7 @@ This reflects how real-world software is built and delivered.
 - Safely evaluates input without security risks
 - Stores calculation history with timestamps
 - Handles errors gracefully and explains them
-- Clean, modern UI built with Streamlit
+- Clean, built with Streamlit
 - Fully deployed and publicly accessible
 
 ---
