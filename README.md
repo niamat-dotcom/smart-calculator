@@ -48,7 +48,7 @@ This reflects how real-world software is built and delivered.
 The application is deployed and accessible online:
 
 🔗 **Live App:**  
-https://smart-calculator.streamlit.app
+https://smart-calculator-wbe.streamlit.app
 
 This link can be opened by anyone without login.
 
