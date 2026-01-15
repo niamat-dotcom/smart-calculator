@@ -1,5 +1,4 @@
-# smart-calculator
-Smart Calculator app built with Stream lit
+
 # Smart Calculator — A Deployed Python Web Application
 
 This project is a fully deployed **interactive calculator web application** built using Python and Streamlit.  
@@ -59,7 +58,7 @@ This link can be opened by anyone without login.
 The complete source code is  publicly available:
 
 🔗 **GitHub Repository:**  
-https://github.com/niamat-dotcom/smart-calculator
+https://github.com/niamat-dotcom/smart-calculator.git
 
 ---
 pip install -r requirements.txt
