@@ -2,31 +2,35 @@ import streamlit as st
 import json
 from datetime import datetime
 import pandas as pd
+from pathlib import Path
 
-# Import your custom modules
+# ================= SAFE IMPORTS =================
 from engine import safe_eval
-from explain import explain_expression
-from error_ai import diagnose_error
 
-HISTORY_FILE = "calculator_history.json"
+try:
+    from explain import explain_expression
+except ImportError:
+    def explain_expression(expr):
+        return ["Explanation module not available."]
 
-# ================= STREAMLIT CONFIG =================
+try:
+    from error_ai import diagnose_error
+except ImportError:
+    def diagnose_error(expr):
+        return "Invalid or unsupported mathematical expression."
+
+# ================= CONFIG =================
 st.set_page_config(
     page_title="Smart Calculator",
     page_icon="➕➖✖️➗",
     layout="wide"
 )
 
+HISTORY_FILE = Path("calculator_history.json")
+
 # ================= STYLING =================
 st.markdown("""
 <style>
-body {
-    background-color: #f0f2f6;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-h1, h2, h3, h4 {
-    color: #2c3e50;
-}
 .stButton>button {
     background-color: #4CAF50;
     color: white;
@@ -38,71 +42,68 @@ h1, h2, h3, h4 {
     border-radius: 10px;
     padding: 0.5em;
 }
-.stDivider {
-    margin: 2rem 0;
-}
 </style>
 """, unsafe_allow_html=True)
 
 # ================= HEADER =================
 st.markdown("<h1 style='text-align:center'>➕➖✖️➗ Smart Calculator</h1>", unsafe_allow_html=True)
-st.markdown("<h4 style='text-align:center; color:gray'>Smart Calculator</h4>", unsafe_allow_html=True)
+st.markdown("<h4 style='text-align:center; color:gray'>Safe • Explainable • Smart</h4>", unsafe_allow_html=True)
 
 # ================= INPUT =================
 st.markdown("### Enter Your Expression")
-expr = st.text_input("Expression", key="expr", placeholder="e.g., 2 * (3 + 5)")
+expr = st.text_input(
+    "Expression",
+    placeholder="e.g. 2 * (3 + 5) or sqrt(16)"
+)
 
 # ================= COMPUTE =================
 if st.button("Compute"):
-    if expr.strip() == "":
-        st.warning("Please enter a valid expression!")
+    if not expr.strip():
+        st.warning("Please enter a valid expression.")
     else:
         try:
-            # Safe AST evaluation
             result = safe_eval(expr)
             explanation = explain_expression(expr)
 
-            # Display result
             st.success(f"💡 Result: {result}")
 
-            # Explainability
             st.markdown("### 🔍 Step-by-step Explanation")
             for step in explanation:
                 st.write(f"• {step}")
 
-            # Record history
+            # Save history
             record = {
                 "expression": expr,
                 "result": result,
-                "time": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                "time": datetime.now().isoformat()
             }
-            try:
-                with open(HISTORY_FILE, "r") as f:
-                    history = json.load(f)
-            except (FileNotFoundError, json.JSONDecodeError):
+
+            if HISTORY_FILE.exists():
+                history = json.loads(HISTORY_FILE.read_text())
+            else:
                 history = []
 
             history.append(record)
-            with open(HISTORY_FILE, "w") as f:
-                json.dump(history, f, indent=2)
+            HISTORY_FILE.write_text(json.dumps(history, indent=2))
 
-        except Exception:
+        except Exception as e:
             st.error(diagnose_error(expr))
-
+            st.caption(f"Debug info: {e}")
 
 # ================= HISTORY =================
-st.markdown("### 📜 History (Last 10 Computations)")
-try:
-    with open(HISTORY_FILE, "r") as f:
-        history = json.load(f)
-except (FileNotFoundError, json.JSONDecodeError):
+st.markdown("### 📜 History (Last 10 Calculations)")
+
+if HISTORY_FILE.exists():
+    history = json.loads(HISTORY_FILE.read_text())
+else:
     history = []
 
 if history:
-    history_df = pd.DataFrame(history)
-    st.dataframe(history_df.sort_values(by="time", ascending=False).head(10))
+    df = pd.DataFrame(history)
+    df["time"] = pd.to_datetime(df["time"])
+    st.dataframe(df.sort_values("time", ascending=False).head(10))
 else:
-    st.info("No history yet. Compute something!")
+    st.info("No history yet.")
 
 # ================= FOOTER =================
 st.markdown("---")
