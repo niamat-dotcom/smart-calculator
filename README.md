@@ -37,7 +37,7 @@ This reflects how real-world software is built and delivered.
 
 - **Python** – core programming language
 - **Streamlit** – web application framework
-- **Pandas** – data handling and history management
+  
   
 
 ---
